@@ -1,0 +1,33 @@
+{
+	"name": "Facebook Stop Autoplay",
+	"version" : "0.1",
+	"manifest_version": 2,
+	"description": "Prevent videos from playing automatically in your facebook news feed.",
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"permissions": [
+		"webRequest",
+		"webRequestBlocking",
+		"storage",
+		"*://*.facebook.com/*",
+		"*://fbcdn-video-a.akamaihd.net/*",
+		"*://*.xx.fbcdn.net/*"
+	],
+	"browser_action": {
+		"default_icon": "icon48.png",
+		"default_popup": "popup.html"
+	},
+	"icons": {
+		"16": "icon16.png",
+		"48": "icon48.png",
+		"128": "icon128.png"
+	},
+	"content_scripts": [
+		{
+			"matches": ["*://*.facebook.com/*"],
+			"js": ["content.js"]
+		}
+	],
+	"web_accessible_resources" : ["lib/jquery-2.0.3.min.map"]
+}
