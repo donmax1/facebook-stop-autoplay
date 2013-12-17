@@ -1,14 +1,10 @@
 (function(self){
 	"use strict";
 
-	// Retreive the ID of a video from it's URL
-	function getVideoId(url){
-		return url.match(/\/v\/(.*)\.mp4/)[1];
-	}
-
 	var blockVideoEnabled = true,
 		allowAllVideos = false,
-		allowedVideos = {};
+		autoReBlockTimeout,
+		autoReBlockDelay = 8000; // milliseconds
 
 	// Check if blocking was disabled by the user
 	chrome.storage.sync.get('allowAllVideos', function( result ){
@@ -16,12 +12,22 @@
 		// Save this setting (can be changed at runtime)
 		allowAllVideos = result.allowAllVideos;
 
-		// ------ CHANGE SETTINGS ------
+		// ------ CHANGE SETTINGS LISTENER ------
 		chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+
+			clearTimeout(autoReBlockTimeout);
+
+			// Re-block all videos after a given delay
+			if(message == "allowVideo"){
+				autoReBlockTimeout = setTimeout(function(){
+					blockVideoEnabled = true;
+				}, autoReBlockDelay);
+			}
 
 			// Change video blocking settings
 			blockVideoEnabled = (message != "allowVideo");
 
+			// Change global settings
 			if( message == "blockAllVideos" ){
 				allowAllVideos = false;
 			}else if( message == "allowAllVideos" ){
@@ -33,28 +39,24 @@
 		chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
 			if( allowAllVideos ){
-				console.log("ALL ALLOWED");
 				return { cancel : false };
 			}
 
 			// Is the video blocking is disabled, allow this URL for future requests
 			if( !blockVideoEnabled ){
-				allowedVideos[getVideoId(details.url)] = true;
 
 				// Do not allow more videos after this one, until a new requests comes from the user
 				blockVideoEnabled = true;
 
-				console.log("TEMP ALLOWED");
 				return { cancel : false };
 			}
 
 			// Else, do not block if this is a video that was alreayd played
-			console.log("IT DEPENDS");
-			return { cancel : !allowedVideos[getVideoId(details.url)] };
+			return { cancel : true };
 			
 		}, {
 			urls: [
-				// These are URL patterns videos can come from
+				// Videos can come from these URL patterns
 				'*://fbcdn-video-a.akamaihd.net/hvideo*',
 				'*://*.xx.fbcdn.net/hvideo*'
 			]

@@ -1,8 +1,8 @@
 {
 	"name": "Facebook Stop Autoplay",
-	"version" : "0.1",
+	"version" : "0.2",
 	"manifest_version": 2,
-	"description": "Prevent videos from playing automatically in your facebook news feed.",
+	"description": "Prevent videos from auto-playing in the facebook news feed.",
 	"background": {
 		"scripts": ["background.js"]
 	},
