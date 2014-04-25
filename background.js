@@ -38,6 +38,8 @@
 		// ----------- VIDEO REQUESTS LISTENER ----------
 		chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
+			var url = details.url;
+
 			if( allowAllVideos ){
 				return { cancel : false };
 			}
@@ -51,15 +53,17 @@
 				return { cancel : false };
 			}
 
-			// Else, do not block if this is a video that was alreayd played
-			return { cancel : true };
+			// Else, do block videos and flash players
+			var isVideo = url.indexOf("hvideo") != -1;
+			var isFlash = url.indexOf(".swf") != -1;
+
+			return { cancel : isVideo || isFlash };
 			
 		}, {
 			urls: [
 				// Videos can come from these URL patterns
 				'*://fbcdn-video-a.akamaihd.net/hvideo*',
-				'*://*.*.fbcdn.net/hvideo*',
-				'*://*.*.fbcdn.net/*/hvideo*'
+				'*://*.fbcdn.net/*'
 			]
 		}, ['blocking']);
 
