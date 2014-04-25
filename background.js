@@ -58,7 +58,8 @@
 			urls: [
 				// Videos can come from these URL patterns
 				'*://fbcdn-video-a.akamaihd.net/hvideo*',
-				'*://*.xx.fbcdn.net/hvideo*'
+				'*://*.xx.fbcdn.net/hvideo*',
+				'*://z-n.ak.fbcdn.net/*/hvideo*'
 			]
 		}, ['blocking']);
 
