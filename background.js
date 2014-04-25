@@ -4,7 +4,7 @@
 	var blockVideoEnabled = true,
 		allowAllVideos = false,
 		autoReBlockTimeout,
-		autoReBlockDelay = 8000; // milliseconds
+		autoReBlockDelay = 12000; // milliseconds
 
 	// Check if blocking was disabled by the user
 	chrome.storage.sync.get('allowAllVideos', function( result ){
